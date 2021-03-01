@@ -93,19 +93,7 @@
                '(mhtml-mode . ("npx"
                                "vscode-html-languageserver-bin"
                                "--stdio"))))
-;; JSON
-(use-package json-mode
-  :after
-  eglot
-  :mode
-  "\\.json'"
-  :hook
-  '(json-mode . eglot-ensure)
-  :config
-  (add-to-list 'eglot-server-programs
-               '(json-mode . ("npx"
-                              "vscode-json-languageserver-bin"
-                              "--stdio"))))
+
 ;; CSS
 (use-package css-mode
   :after
@@ -119,6 +107,36 @@
                '(css-mode . ("npx"
                              "vscode-css-languageserver-bin"
                              "--stdio"))))
+
+;;; Data formats
+
+;; JSON
+(use-package json-mode
+  :after
+  eglot
+  :mode
+  "\\.json'"
+  :hook
+  '(json-mode . eglot-ensure)
+  :config
+  (add-to-list 'eglot-server-programs
+               '(json-mode . ("npx"
+                              "vscode-json-languageserver-bin"
+                              "--stdio"))))
+
+;; YAML
+(use-package yaml-mode
+  :after
+  eglot
+  :mode
+  "\\.yaml'"
+  :hook
+  '(yaml-mode . eglot-ensure)
+  :config
+  (add-to-list 'eglot-server-programs
+	       '(yaml-mode . ("npx"
+			      "yaml-language-server"
+			      "--stdio"))))
 
 (provide 'init)
 
