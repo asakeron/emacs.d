@@ -7,15 +7,44 @@
 
 (fset 'yes-or-no-p 'y-or-n-p)
 
+;;; vim emulation
+;; * evil:            provides modal editing
+;; * evil-collection: binds vimish keys standard Emacs modes
+;; * vimish-fold:     provide universal folding vim-style
+
 (use-package evil
   :init
+  (setq
+   evil-want-keybinding nil)
+   :config
   (evil-mode +1))
 
-(use-package doom-modeline
-  :hook
-  '(after-init . doom-modeline-mode))
+(use-package evil-collection
+  :after
+  evil
+ :config
+  (evil-collection-init))
 
-;;; Programming environments
+(use-package vimish-fold
+  :after
+  evil)
+
+(use-package evil-vimish-fold
+  :after
+  vimish-fold
+  :config
+  (evil-vimish-fold-mode))
+
+;;; Programming environment
+;; Emacs already includes packages for hacking code. They are enabled
+;; in prog-mode and tweaked. The main points are:
+;; * Display relative line numbers for comvenient navigation with
+;;   vim keys;
+;; * Highlight possible mistakes using whitespace-mode, flymake,
+;;   fill-column indicator, etc;
+;; * Use whitespace for indentation by default;
+;; * Use eglot as LSP client for all languages providing accessible
+;;   servers;
 
 (defconst me/max-column 100)
 (defconst me/tab-width  2)
@@ -54,7 +83,6 @@
 
 (use-package eglot)
 
-;; Javascript
 (use-package js2-mode
   :after
   eglot
@@ -67,7 +95,7 @@
                '(js2-mode . ("npx"
                              "typescript-language-server"
                              "--stdio"))))
-;; Typescript
+
 (use-package typescript-mode
   :after
   eglot
@@ -80,7 +108,7 @@
                '(typescript-mode . ("npx"
                                     "typescript-language-server"
                                     "--stdio"))))
-;; HTML
+
 (use-package mhtml-mode
   :after
   eglot
@@ -94,7 +122,6 @@
                                "vscode-html-languageserver-bin"
                                "--stdio"))))
 
-;; CSS
 (use-package css-mode
   :after
   eglot
@@ -108,9 +135,6 @@
                              "vscode-css-languageserver-bin"
                              "--stdio"))))
 
-;;; Data formats
-
-;; JSON
 (use-package json-mode
   :after
   eglot
@@ -124,7 +148,6 @@
                               "vscode-json-languageserver-bin"
                               "--stdio"))))
 
-;; YAML
 (use-package yaml-mode
   :after
   eglot
