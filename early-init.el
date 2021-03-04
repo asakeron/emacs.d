@@ -13,6 +13,9 @@
  package-enable-at-startup       nil
  inhibit-startup-screen          t)
 
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name
@@ -27,8 +30,8 @@
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
-(straight-use-package 'use-package)
 
+(straight-use-package 'use-package)
 (use-package no-littering
   :init
   (setq
@@ -48,17 +51,30 @@
 (use-package doom-themes
   :hook
   '(org-mode . doom-themes-org-config)
+  :hook
+  '(after-init . (lambda ()
+		   (load-theme 'doom-one t)))
   :init
   (setq
    doom-themes-enable-bold   t
-   doom-themes-enable-italic t)
-  (menu-bar-mode -1)
-  (tool-bar-mode -1)
-  (load-theme 'doom-one t))
+   doom-themes-enable-italic t))
 
 (use-package doom-modeline
   :hook
   '(after-init . doom-modeline-mode))
+
+(use-package solaire-mode
+  :hook
+  '(change-major-mode . turn-on-solaire-mode)
+  :hook
+  '(after-revert . turn-on-solaire-mode)
+  :hook
+  '(ediff-prepare-buffer . solaire-mode)
+  :hook
+  '(minibuffer-setup . solaire-mode-in-minibuffer)
+  :hook
+  '(after-init . (lambda ()
+		   (solaire-global-mode +1))))
 
 (provide 'early-init)
 
