@@ -56,6 +56,10 @@
   (tool-bar-mode -1)
   (load-theme 'doom-one t))
 
+(use-package doom-modeline
+  :hook
+  '(after-init . doom-modeline-mode))
+
 (provide 'early-init)
 
 ;;; early-init ends here
