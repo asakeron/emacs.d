@@ -64,6 +64,10 @@
   :hook
   '(prog-mode . evil-vimish-fold-mode))
 
+(use-package ivy
+  :config
+  (ivy-mode +1))
+
 ;;; Programming environment
 ;; Emacs already includes packages for hacking code. They are enabled
 ;; in prog-mode and tweaked. The main points are:
@@ -199,6 +203,24 @@
 	       '(yaml-mode . ("npx"
 			      "yaml-language-server"
 			      "--stdio"))))
+
+(use-package web-mode
+  :after
+  eglot
+  :mode
+  "\\.tsx\\'"
+  :hook
+  '(web-mode . eglot-ensure)
+  :config
+  (add-to-list 'eglot-server-programs
+               '(web-mode . ("npx"
+                             "typescript-language-server"
+                             "--stdio")))
+  :init
+  (setq
+   web-mode-markup-indent-offset me/tab-width
+   web-mode-css-indent-offset    me/tab-width
+   web-mode-code-indent-offset   me/tab-width))
 
 (provide 'init)
 

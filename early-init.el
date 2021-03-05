@@ -64,22 +64,6 @@
   :hook
   '(after-init . doom-modeline-mode))
 
-; (use-package solaire-mode
-;   :hook
-;   '(change-major-mode . turn-on-solaire-mode)
-;   :hook
-;   '(after-revert . turn-on-solaire-mode)
-;   :hook
-;   '(ediff-prepare-buffer . solaire-mode)
-;   :hook
-;   '(minibuffer-setup . solaire-mode-in-minibuffer)
-;   :hook
-;   '(after-init . (lambda ()
-; 		   (solaire-global-mode +1)))
-;   :config
-;   (setq
-;    solaire-mode-auto-swap-bg t))
-
 (provide 'early-init)
 
 ;;; early-init ends here
