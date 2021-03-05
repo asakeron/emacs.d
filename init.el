@@ -5,12 +5,41 @@
 
 ;;; Code:
 
-(fset 'yes-or-no-p 'y-or-n-p)
-
 ;;; vim emulation
 ;; * evil:            provides modal editing
 ;; * evil-collection: binds vimish keys standard Emacs modes
 ;; * vimish-fold:     provide universal folding vim-style
+
+(use-package all-the-icons)
+
+(use-package dired-sidebar
+  ;:config
+  ;(setq
+  ; dired-sidebar-theme 'all-the-icons)
+  :commands
+  (dired-sidebar-toggle-sidebar))
+
+(use-package all-the-icons-dired
+  :after
+  all-the-icons
+  :hook
+  '(dired-mode . all-the-icons-dired-mode))
+
+(use-package centaur-tabs
+  :after
+  all-the-icons
+  :init
+  (setq
+   centaur-tabs-style               "bar"
+   centaur-tabs-set-bar             'left
+   centaur-tabs-set-icons           t
+   centaur-tabs-gray-out-icons      'buffer
+   centaur-tabs-set-modified-marker t
+   centaur-tabs-modified-marker     "●")
+  :hook
+  '(after-init . (lambda ()
+		   (centaur-tabs-mode t)
+		   (centaur-tabs-headline-match))))
 
 (use-package evil
   :init
@@ -32,8 +61,8 @@
 (use-package evil-vimish-fold
   :after
   vimish-fold
-  :config
-  (evil-vimish-fold-mode))
+  :hook
+  '(prog-mode . evil-vimish-fold-mode))
 
 ;;; Programming environment
 ;; Emacs already includes packages for hacking code. They are enabled
@@ -80,6 +109,16 @@
 (use-package flymake
   :hook
   '(prog-mode . flymake-mode))
+
+(use-package vterm
+  :defer
+  t
+  :commands
+  'vterm)
+
+(use-package git-gutter
+  :config
+  (global-git-gutter-mode +1))
 
 (use-package eglot)
 
