@@ -5,6 +5,14 @@
 
 ;;; Code:
 
+(defun hook-when (ext action)
+  "Combinator for describing a computation to be run in mode hooks.
+ACTION is run when the file name matches EXT."
+  #'(lambda ()
+      (if (buffer-file-name)
+	  (if (string-match ext buffer-file-name)
+              (funcall action)))))
+
 ;;; vim emulation
 ;; * evil:            provides modal editing
 ;; * evil-collection: binds vimish keys standard Emacs modes
@@ -196,6 +204,8 @@
   eglot
   :mode
   "\\.yaml'"
+  :mode
+  "\\.yml'"
   :hook
   '(yaml-mode . eglot-ensure)
   :config
@@ -204,23 +214,39 @@
 			      "yaml-language-server"
 			      "--stdio"))))
 
+;; .j|tsx
+(use-package js
+  :after
+  eglot
+  :mode
+  ("\\.jsx\\'" . js-mode)
+  :hook
+  '(js-mode . eglot-ensure)
+  :config
+  (add-to-list 'eglot-server-programs
+	       '(js-mode . ("npx"
+			    "typescript-language-server"
+			    "--stdio"))))
+
 (use-package web-mode
   :after
   eglot
   :mode
   "\\.tsx\\'"
-  :hook
-  '(web-mode . eglot-ensure)
-  :config
-  (add-to-list 'eglot-server-programs
-               '(web-mode . ("npx"
-                             "typescript-language-server"
-                             "--stdio")))
   :init
   (setq
    web-mode-markup-indent-offset me/tab-width
    web-mode-css-indent-offset    me/tab-width
-   web-mode-code-indent-offset   me/tab-width))
+   web-mode-code-indent-offset   me/tab-width)
+  (add-hook 'web-mode-hook
+            (hook-when "\\.tsx\\'"
+		       (lambda ()
+                         (add-to-list 'eglot-server-programs
+				      '(web-mode . ("npx"
+					            "typescript-language-server"
+                                                    "--stdio"))))))
+  (add-hook 'web-mode-hook
+	    (hook-when "\\.tsx\\'" 'eglot-ensure)))
 
 (provide 'init)
 
