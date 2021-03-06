@@ -1,10 +1,5 @@
 ;;; init.el --- emacs configuration -*- lexical-binding: t; -*-
 
-;;; Commentary:
-;; Reproducible Emacs configuration using straight.el
-
-;;; Code:
-
 (defun hook-when (ext action)
   "Combinator for describing a computation to be run in mode hooks.
 ACTION is run when the file name matches EXT."
@@ -13,17 +8,50 @@ ACTION is run when the file name matches EXT."
 	  (if (string-match ext buffer-file-name)
               (funcall action)))))
 
-;;; vim emulation
-;; * evil:            provides modal editing
-;; * evil-collection: binds vimish keys standard Emacs modes
-;; * vimish-fold:     provide universal folding vim-style
+(fset 'yes-or-no-p 'y-or-n-p)
+
+(use-package no-littering
+  :init
+  (setq
+   no-littering-etc-directory "~/.local/emacs/etc/"
+   no-littering-var-directory "~/.local/emacs/var/")
+  (require 'no-littering)
+  :config
+  (setq
+   auto-save-file-name-transforms
+   `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))
+   custom-file
+   (no-littering-expand-etc-file-name "custom.el"))
+  (with-eval-after-load 'recentf
+    (add-to-list 'recentf-exclude no-littering-var-directory)
+    (add-to-list 'recentf-exclude no-littering-etc-directory)))
+
+(use-package ivy
+  :config
+  (ivy-mode +1))
+
+;; Theme
+(use-package doom-themes
+  :hook
+  '(org-mode . doom-themes-org-config)
+  :hook
+  '(after-init . (lambda ()
+		   (load-theme 'doom-one t)))
+  :init
+  (setq
+   doom-themes-enable-bold   t
+   doom-themes-enable-italic t))
+
+(use-package doom-modeline
+  :hook
+  '(after-init . doom-modeline-mode))
 
 (use-package all-the-icons)
 
 (use-package dired-sidebar
-  ;:config
-  ;(setq
-  ; dired-sidebar-theme 'all-the-icons)
+  :config
+  (setq
+   dired-sidebar-theme 'all-the-icons)
   :commands
   (dired-sidebar-toggle-sidebar))
 
@@ -33,22 +61,7 @@ ACTION is run when the file name matches EXT."
   :hook
   '(dired-mode . all-the-icons-dired-mode))
 
-(use-package centaur-tabs
-  :after
-  all-the-icons
-  :init
-  (setq
-   centaur-tabs-style               "bar"
-   centaur-tabs-set-bar             'left
-   centaur-tabs-set-icons           t
-   centaur-tabs-gray-out-icons      'buffer
-   centaur-tabs-set-modified-marker t
-   centaur-tabs-modified-marker     "●")
-  :hook
-  '(after-init . (lambda ()
-		   (centaur-tabs-mode t)
-		   (centaur-tabs-headline-match))))
-
+;; Evil
 (use-package evil
   :init
   (setq
@@ -71,10 +84,6 @@ ACTION is run when the file name matches EXT."
   vimish-fold
   :hook
   '(prog-mode . evil-vimish-fold-mode))
-
-(use-package ivy
-  :config
-  (ivy-mode +1))
 
 ;;; Programming environment
 ;; Emacs already includes packages for hacking code. They are enabled
