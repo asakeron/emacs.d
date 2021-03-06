@@ -124,31 +124,20 @@ ACTION is run when the file name matches EXT."
   :hook
   '(prog-mode . flymake-mode))
 
-(use-package vterm
-  :defer
-  t
-  :commands
-  'vterm)
-
 (use-package git-gutter
   :config
   (global-git-gutter-mode +1))
 
 (use-package eglot)
 
-(use-package js2-mode
-  :after
-  eglot
-  :mode
-  "\\.js\\'"
+(use-package vterm
+  :commands
+  (vterm))
+
+(use-package magit)
+
 (use-package apheleia
   :hook
-  '(js2-mode . eglot-ensure)
-  :config
-  (add-to-list 'eglot-server-programs
-               '(js2-mode . ("npx"
-                             "typescript-language-server"
-                             "--stdio"))))
   '(after-init . apheleia-global-mode))
 
 (use-package typescript-mode
@@ -165,17 +154,8 @@ ACTION is run when the file name matches EXT."
                                     "--stdio"))))
 
 (use-package mhtml-mode
-  :after
-  eglot
   :mode
-  "\\.html\\'"
-  :hook
-  '(mhtml-mode . eglot-ensure)
-  :config
-  (add-to-list 'eglot-server-programs
-               '(mhtml-mode . ("npx"
-                               "vscode-html-languageserver-bin"
-                               "--stdio"))))
+  "\\.html?\\'")
 
 (use-package css-mode
   :after
@@ -204,26 +184,16 @@ ACTION is run when the file name matches EXT."
                               "--stdio"))))
 
 (use-package yaml-mode
-  :after
-  eglot
   :mode
   "\\.yaml'"
   :mode
-  "\\.yml'"
-  :hook
-  '(yaml-mode . eglot-ensure)
-  :config
-  (add-to-list 'eglot-server-programs
-	       '(yaml-mode . ("npx"
-			      "yaml-language-server"
-			      "--stdio"))))
+  "\\.yml'")
 
-;; .j|tsx
 (use-package js
   :after
   eglot
   :mode
-  ("\\.jsx\\'" . js-mode)
+  ("\\.jsx?\\'" . js-mode)
   :hook
   '(js-mode . eglot-ensure)
   :config
