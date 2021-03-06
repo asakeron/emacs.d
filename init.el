@@ -85,20 +85,15 @@ ACTION is run when the file name matches EXT."
   :hook
   '(prog-mode . evil-vimish-fold-mode))
 
-;;; Programming environment
-;; Emacs already includes packages for hacking code. They are enabled
-;; in prog-mode and tweaked. The main points are:
-;; * Display relative line numbers for comvenient navigation with
-;;   vim keys;
-;; * Highlight possible mistakes using whitespace-mode, flymake,
-;;   fill-column indicator, etc;
-;; * Use whitespace for indentation by default;
-;; * Use eglot as LSP client for all languages providing accessible
-;;   servers;
+;;; Programming
 
 (defconst me/max-column 100)
-(defconst me/tab-width  2)
+
 (add-hook 'prog-mode-hook #'show-paren-mode)
+
+(use-package editorconfig
+  :hook
+  '(after-init . editorconfig-mode))
 
 (use-package display-line-numbers
   :hook
@@ -112,8 +107,6 @@ ACTION is run when the file name matches EXT."
   '(prog-mode . whitespace-mode)
   :init
   (setq
-   indent-tabs-mode nil
-   tab-width        me/tab-width
    whitespace-style '(face trailing tabs)))
 
 (use-package display-fill-column-indicator
@@ -148,6 +141,7 @@ ACTION is run when the file name matches EXT."
   eglot
   :mode
   "\\.js\\'"
+(use-package apheleia
   :hook
   '(js2-mode . eglot-ensure)
   :config
@@ -155,6 +149,7 @@ ACTION is run when the file name matches EXT."
                '(js2-mode . ("npx"
                              "typescript-language-server"
                              "--stdio"))))
+  '(after-init . apheleia-global-mode))
 
 (use-package typescript-mode
   :after
@@ -243,10 +238,6 @@ ACTION is run when the file name matches EXT."
   :mode
   "\\.tsx\\'"
   :init
-  (setq
-   web-mode-markup-indent-offset me/tab-width
-   web-mode-css-indent-offset    me/tab-width
-   web-mode-code-indent-offset   me/tab-width)
   (add-hook 'web-mode-hook
             (hook-when "\\.tsx\\'"
 		       (lambda ()
